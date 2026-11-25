@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>forceUpdate() is lost when componentShouldUpdate turns the queued update down</title>
+    <script type="module" src="/build/repro.esm.js"></script>
+  </head>
+  <body>
+    <button type="button" data-method="force">forceUpdate()</button>
+    <button type="button" data-method="assignEqualValueAndForce">assign an equal value, then forceUpdate()</button>
+    <button type="button" data-method="forceAndAssignEqualValue">forceUpdate(), then assign an equal value</button>
+    <repro-force></repro-force>
+    <script>
+      document.querySelectorAll('button').forEach((button) =>
+        button.addEventListener('click', () => document.querySelector('repro-force')[button.dataset.method]())
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "should-update-parent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "stencil build",
+    "start": "stencil build && stencil serve --root www --port 3333"
+  }
+}

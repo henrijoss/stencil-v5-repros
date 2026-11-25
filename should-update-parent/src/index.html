@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>componentShouldUpdate returning false leaves the parent waiting</title>
+    <script type="module" src="/build/repro.esm.js"></script>
+  </head>
+  <body>
+    <button type="button">increment count of the parent</button>
+    <repro-parent></repro-parent>
+    <pre id="log"></pre>
+    <script>
+      document.querySelector('button').addEventListener('click', () => {
+        document.querySelector('repro-parent').count++;
+      });
+    </script>
+  </body>
+</html>
