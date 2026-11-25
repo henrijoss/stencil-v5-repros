@@ -1,0 +1,9 @@
+{
+  "name": "changes-old-value",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "stencil build",
+    "start": "stencil build && stencil serve --root www --port 3335"
+  }
+}

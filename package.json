@@ -5,13 +5,14 @@
   "workspaces": [
     "should-update-parent",
     "force-update",
-    "cjs-interop"
+    "cjs-interop",
+    "changes-old-value"
   ],
   "scripts": {
     "build": "npm run build --workspaces"
   },
   "devDependencies": {
-    "@stencil/core": "5.0.0-rc.9",
+    "@stencil/core": "5.0.0-rc.10",
     "jsdom": "^27.0.0",
     "typescript": "^6.0.0"
   }

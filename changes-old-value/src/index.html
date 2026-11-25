@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>componentShouldUpdate gets the wrong oldVal when a prop that was undefined is set twice</title>
+    <script type="module" src="/build/repro.esm.js"></script>
+  </head>
+  <body>
+    <button type="button" id="once">set config once</button>
+    <button type="button" id="twice">set config twice, to two objects with the same content</button>
+    <repro-old-value id="a"></repro-old-value>
+    <repro-old-value id="b"></repro-old-value>
+    <pre id="log"></pre>
+    <script>
+      const log = console.log;
+      console.log = (...args) => {
+        document.querySelector('#log').append(args.join(' ') + '\n');
+        log(...args);
+      };
+      document.querySelector('#once').addEventListener('click', () => {
+        document.querySelector('#a').config = { label: 'a' };
+      });
+      document.querySelector('#twice').addEventListener('click', () => {
+        const element = document.querySelector('#b');
+        element.config = { label: 'b' };
+        element.config = { label: 'b' };
+      });
+    </script>
+  </body>
+</html>

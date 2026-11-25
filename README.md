@@ -1,13 +1,14 @@
 # Stencil 5 reproductions
 
-Three bugs found while moving a component library from Stencil 4.45 to `5.0.0-rc.9`. Each folder is a minimal project
+Four bugs found while moving a component library from Stencil 4.45 to Stencil 5, last run with `5.0.0-rc.10`. Each folder is a minimal project
 of its own.
 
-| Reproduction           | 4.45.1                                          | 5.0.0-rc.9                                         |
+| Reproduction           | 4.45.1                                          | 5.0.0-rc.10                                        |
 | ---------------------- | ----------------------------------------------- | -------------------------------------------------- |
 | `should-update-parent` | count 3, `componentDidUpdate` after every click | count stays at 1, no `componentDidUpdate`          |
 | `force-update`         | render count 1 → 2 → 3 → 4                      | render count 1 → 2 → 2 → 2                         |
 | `cjs-interop`          | component renders                               | `ReferenceError: _interopNamespace is not defined` |
+| `changes-old-value`    | the second element renders its `config`         | the second element keeps rendering `undefined`     |
 
 The 4.45.1 column comes from the same components with the Stencil 4 spelling of `@Component()` and
 `componentShouldUpdate`, and from a `dist` output target with `extras.enableImportInjection`. The browser
@@ -46,6 +47,20 @@ npm start --workspace=force-update   # http://localhost:3334
 - `forceUpdate()`: the render count goes up, as expected.
 - `assign an equal value, then forceUpdate()`: expected to go up, stays the same.
 - `forceUpdate(), then assign an equal value`: expected to go up, stays the same.
+
+## `changes-old-value`
+
+`componentShouldUpdate` gets the wrong `oldVal` for a prop that was `undefined` or `null` at the last render and is set
+more than once before the next one.
+
+```bash
+npm start --workspace=changes-old-value   # http://localhost:3335
+```
+
+- `set config once`: the first element renders `{"label":"a"}`, as expected.
+- `set config twice, to two objects with the same content`: the second element is expected to render `{"label":"b"}`
+  and keeps rendering `undefined`. The log shows why: `oldVal` is the object of the first assignment, where it should
+  be `undefined`, the value of the last render.
 
 ## `cjs-interop`
 
