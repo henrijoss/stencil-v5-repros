@@ -1,14 +1,18 @@
 # Stencil 5 reproductions
 
-Four bugs found while moving a component library from Stencil 4.45 to Stencil 5, last run with `5.0.0-rc.10`. Each folder is a minimal project
-of its own.
+Four bugs found while moving a component library from Stencil 4.45 to Stencil 5. Each folder is a minimal project of
+its own.
 
-| Reproduction           | 4.45.1                                          | 5.0.0-rc.10                                        |
-| ---------------------- | ----------------------------------------------- | -------------------------------------------------- |
-| `should-update-parent` | count 3, `componentDidUpdate` after every click | count stays at 1, no `componentDidUpdate`          |
-| `force-update`         | render count 1 → 2 → 3 → 4                      | render count 1 → 2 → 2 → 2                         |
-| `cjs-interop`          | component renders                               | `ReferenceError: _interopNamespace is not defined` |
-| `changes-old-value`    | the second element renders its `config`         | the second element keeps rendering `undefined`     |
+**All four are fixed in `5.0.0-rc.11`.** This repository stays on `5.0.0-rc.10`, the last version that shows them. To
+see the fixed behavior, which is the one of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.12` before a
+reproduction.
+
+| Reproduction           | Issue                                                                | 4.45.1                                          | 5.0.0-rc.10                                        |
+| ---------------------- | -------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------- |
+| `should-update-parent` | [stenciljs/core#7038](https://github.com/stenciljs/core/issues/7038) | count 3, `componentDidUpdate` after every click | count stays at 1, no `componentDidUpdate`          |
+| `force-update`         | [stenciljs/core#7039](https://github.com/stenciljs/core/issues/7039) | render count 1 → 2 → 3 → 4                      | render count 1 → 2 → 2 → 2                         |
+| `cjs-interop`          | [stenciljs/core#7040](https://github.com/stenciljs/core/issues/7040) | component renders                               | `ReferenceError: _interopNamespace is not defined` |
+| `changes-old-value`    | [stenciljs/core#7042](https://github.com/stenciljs/core/issues/7042) | the second element renders its `config`         | the second element keeps rendering `undefined`     |
 
 The 4.45.1 column comes from the same components with the Stencil 4 spelling of `@Component()` and
 `componentShouldUpdate`, and from a `dist` output target with `extras.enableImportInjection`. The browser
