@@ -7,7 +7,8 @@
     "force-update",
     "cjs-interop",
     "changes-old-value",
-    "types-import"
+    "types-import",
+    "ssr-streaming"
   ],
   "scripts": {
     "build": "npm run build --workspaces"

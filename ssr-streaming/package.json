@@ -1,0 +1,9 @@
+{
+  "name": "ssr-streaming",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "stencil build",
+    "start": "stencil build && node server.js"
+  }
+}
