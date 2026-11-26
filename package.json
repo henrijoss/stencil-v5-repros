@@ -6,7 +6,8 @@
     "should-update-parent",
     "force-update",
     "cjs-interop",
-    "changes-old-value"
+    "changes-old-value",
+    "types-import"
   ],
   "scripts": {
     "build": "npm run build --workspaces"

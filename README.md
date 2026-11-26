@@ -1,11 +1,11 @@
 # Stencil 5 reproductions
 
-Four bugs found while moving a component library from Stencil 4.45 to Stencil 5. Each folder is a minimal project of
+Five bugs found while moving a component library from Stencil 4.45 to Stencil 5. Each folder is a minimal project of
 its own.
 
-**All four are fixed in `5.0.0-rc.11`.** This repository stays on `5.0.0-rc.10`, the last version that shows them. To
-see the fixed behavior, which is the one of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.12` before a
-reproduction.
+**The first four are fixed in `5.0.0-rc.11`.** `types-import` is still open in `5.0.0-rc.12`. This repository stays on
+`5.0.0-rc.10`, the last version that shows all of them. To see the fixed behavior, which is the one of the 4.45.1 column,
+run `npm install @stencil/core@5.0.0-rc.12` before a reproduction.
 
 | Reproduction           | Issue                                                                | 4.45.1                                          | 5.0.0-rc.10                                        |
 | ---------------------- | -------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------- |
@@ -13,6 +13,7 @@ reproduction.
 | `force-update`         | [stenciljs/core#7039](https://github.com/stenciljs/core/issues/7039) | render count 1 → 2 → 3 → 4                      | render count 1 → 2 → 2 → 2                         |
 | `cjs-interop`          | [stenciljs/core#7040](https://github.com/stenciljs/core/issues/7040) | component renders                               | `ReferenceError: _interopNamespace is not defined` |
 | `changes-old-value`    | [stenciljs/core#7042](https://github.com/stenciljs/core/issues/7042) | the second element renders its `config`         | the second element keeps rendering `undefined`     |
+| `types-import`         | [stenciljs/core#7048](https://github.com/stenciljs/core/issues/7048) | types work without `@stencil/core`              | `Cannot find module '@stencil/core/runtime'`       |
 
 The 4.45.1 column comes from the same components with the Stencil 4 spelling of `@Component()` and
 `componentShouldUpdate`, and from a `dist` output target with `extras.enableImportInjection`. The browser
@@ -65,6 +66,25 @@ npm start --workspace=changes-old-value   # http://localhost:3335
 - `set config twice, to two objects with the same content`: the second element is expected to render `{"label":"b"}`
   and keeps rendering `undefined`. The log shows why: `oldVal` is the object of the first assignment, where it should
   be `undefined`, the value of the last render.
+
+## `types-import`
+
+`dist/types/components.d.ts` imports `@stencil/core/runtime`, so the published types only work in an application that
+has `@stencil/core` installed.
+
+```bash
+npm run repro --workspace=types-import
+```
+
+The script prints the imports of Stencil in `dist/types`, copies the types out of the repository, where
+`@stencil/core` can't be resolved, and type-checks a file that uses the element.
+
+- Expected: `components.d.ts` imports `./stencil-public-runtime`, like the declaration file of the component, and the
+  only error is the deliberate typo in `app.ts` (`labell`).
+- Actual: `components.d.ts` imports `@stencil/core/runtime`. `tsc` reports
+  `Cannot find module '@stencil/core/runtime'`, and `Property 'focus' does not exist on type 'HTMLReproTypesElement'`,
+  because the element type lost everything it inherits from `HTMLElement`. With `skipLibCheck` the first error is
+  hidden and the second stays.
 
 ## `cjs-interop`
 

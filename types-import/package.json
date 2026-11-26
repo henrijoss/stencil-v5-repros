@@ -1,0 +1,9 @@
+{
+  "name": "types-import",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "stencil build",
+    "repro": "stencil build && node repro.js"
+  }
+}
