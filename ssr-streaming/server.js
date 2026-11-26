@@ -11,9 +11,11 @@ const pending = new Map();
 let pageId = 0;
 
 const cases = {
-  control: { insert: false, splitAt: '<template' },
-  'insert-before-template': { insert: true, splitAt: '<template' },
-  'insert-inside-template': { insert: true, splitAt: '<p' },
+  control: { tag: 'repro-ssr', insert: false, splitAt: '<template' },
+  'insert-before-template': { tag: 'repro-ssr', insert: true, splitAt: '<template' },
+  'insert-inside-template': { tag: 'repro-ssr', insert: true, splitAt: '<p' },
+  'control-children': { tag: 'repro-ssr-children', insert: false, splitAt: '<span>Slotted' },
+  'insert-before-children': { tag: 'repro-ssr-children', insert: true, splitAt: '<span>Slotted' },
 };
 
 const index = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>SSR streaming</title></head><body>
@@ -24,20 +26,20 @@ const index = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title
 // The components are loaded without waiting for the document, as streaming frameworks do, so they are defined while
 // the page is streamed.
 // The inline script tells the server to go on: once the component is defined, and once the host is in the document.
-const client = (id, insert) => `
+const client = (id, tag, insert) => `
 <script>
   import('/build/repro.esm.js');
   const next = () => fetch('/next?id=${id}');
-  customElements.whenDefined('repro-ssr').then(next);
+  customElements.whenDefined('${tag}').then(next);
   const timer = setInterval(() => {
-    if (!document.querySelector('repro-ssr')) return;
+    if (!document.querySelector('${tag}')) return;
     clearInterval(timer);
     // what a portal, a toast container or a script loader does while the page is still streamed
     ${insert ? "document.body.appendChild(Object.assign(document.createElement('div'), { id: 'portal' }));" : ''}
     setTimeout(next, 500);
   }, 10);
   window.addEventListener('load', () => setTimeout(() => {
-    const host = document.querySelector('repro-ssr');
+    const host = document.querySelector('${tag}');
     document.querySelector('#result').textContent =
       'light DOM children of the host: ' + Array.from(host.children, (el) => el.localName).join(', ') +
       '\\nshadow root: ' + host.shadowRoot.innerHTML;
@@ -58,10 +60,10 @@ createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': extname(file) === '.js' ? 'text/javascript' : 'application/octet-stream' });
     createReadStream(file).pipe(res);
   } else if (cases[pathname.slice(1)]) {
-    const { insert, splitAt } = cases[pathname.slice(1)];
+    const { tag, insert, splitAt } = cases[pathname.slice(1)];
     const id = String(++pageId);
     const signal = () => new Promise((resolve) => pending.set(id, resolve));
-    const { html } = await renderToString('<repro-ssr label="Server label"><span>Slotted</span></repro-ssr>', {
+    const { html } = await renderToString(`<${tag} label="Server label"><span>Slotted</span></${tag}>`, {
       fullDocument: false,
       prettyHtml: false,
     });
@@ -70,7 +72,7 @@ createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
     // browsers wait for some bytes before they start to render
     res.write(
-      `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>${pathname.slice(1)}</title><!-- ${'.'.repeat(2048)} -->${client(id, insert)}</head><body><main>`,
+      `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>${pathname.slice(1)}</title><!-- ${'.'.repeat(2048)} -->${client(id, tag, insert)}</head><body><main>`,
     );
     await signal(); // the component is defined
     res.write(html.slice(0, split));

@@ -91,8 +91,8 @@ The script prints the imports of Stencil in `dist/types`, copies the types out o
 
 ## `ssr-streaming`
 
-A server-rendered component that is streamed loses its declarative shadow root, or gets content twice, when a script
-inserts a node into the document while the parser is inside the component.
+A server-rendered component that is streamed loses its declarative shadow root, gets content twice, or hydrates
+without its children, when a script inserts a node into the document while the parser is inside the component.
 
 ```bash
 npm start --workspace=ssr-streaming   # http://localhost:3336
@@ -107,6 +107,10 @@ pauses in the middle of the host. Each page prints the light DOM children and th
   `A second declarative shadow root cannot be created on a host`.
 - `insert-inside-template`: the same while the template is streamed. Expected as in `control`. Actual: the shadow root
   has the label twice.
+- `control-children` and `insert-before-children` use `<repro-ssr-children>`, which renders the number of its children.
+  The server renders `children: 1`. When the page appends the `div` after the template of the host has arrived and
+  before its child has, the component hydrates without the child and shows `children: 0`, although the host has its
+  `span` in the end. Without the `div` it stays `children: 1`.
 
 ## `cjs-interop`
 

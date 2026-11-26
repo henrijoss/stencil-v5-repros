@@ -8,6 +8,8 @@ export namespace Components {
     interface ReproSsr {
         "label"?: string;
     }
+    interface ReproSsrChildren {
+    }
 }
 declare global {
     interface HTMLReproSsrElement extends Components.ReproSsr, HTMLStencilElement {
@@ -16,13 +18,22 @@ declare global {
         prototype: HTMLReproSsrElement;
         new (): HTMLReproSsrElement;
     };
+    interface HTMLReproSsrChildrenElement extends Components.ReproSsrChildren, HTMLStencilElement {
+    }
+    var HTMLReproSsrChildrenElement: {
+        prototype: HTMLReproSsrChildrenElement;
+        new (): HTMLReproSsrChildrenElement;
+    };
     interface HTMLElementTagNameMap {
         "repro-ssr": HTMLReproSsrElement;
+        "repro-ssr-children": HTMLReproSsrChildrenElement;
     }
 }
 declare namespace LocalJSX {
     interface ReproSsr {
         "label"?: string;
+    }
+    interface ReproSsrChildren {
     }
 
     interface ReproSsrAttributes {
@@ -31,6 +42,7 @@ declare namespace LocalJSX {
 
     interface IntrinsicElements {
         "repro-ssr": Omit<ReproSsr, keyof ReproSsrAttributes> & { [K in keyof ReproSsr & keyof ReproSsrAttributes]?: ReproSsr[K] } & { [K in keyof ReproSsr & keyof ReproSsrAttributes as `attr:${K}`]?: ReproSsrAttributes[K] } & { [K in keyof ReproSsr & keyof ReproSsrAttributes as `prop:${K}`]?: ReproSsr[K] };
+        "repro-ssr-children": ReproSsrChildren;
     }
 }
 export { LocalJSX as JSX };
@@ -38,6 +50,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "repro-ssr": LocalJSX.IntrinsicElements["repro-ssr"] & JSXBase.HTMLAttributes<HTMLReproSsrElement>;
+            "repro-ssr-children": LocalJSX.IntrinsicElements["repro-ssr-children"] & JSXBase.HTMLAttributes<HTMLReproSsrChildrenElement>;
         }
     }
 }
