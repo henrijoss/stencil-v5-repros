@@ -16,7 +16,7 @@ of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.12` before a repro
 | `types-import`         | [stenciljs/core#7048](https://github.com/stenciljs/core/issues/7048) | types work without `@stencil/core`              | `Cannot find module '@stencil/core/runtime'`       |
 
 `ssr-streaming` is not in the table, because it is not a regression: it shows a gap in the parse gate that Stencil 5
-added for streamed server markup.
+added for streamed server markup ([stenciljs/core#7049](https://github.com/stenciljs/core/issues/7049)).
 
 The 4.45.1 column comes from the same components with the Stencil 4 spelling of `@Component()` and
 `componentShouldUpdate`, and from a `dist` output target with `extras.enableImportInjection`. The browser
