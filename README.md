@@ -3,9 +3,9 @@
 Bugs found while moving a component library from Stencil 4.45 to Stencil 5. Each folder is a minimal project of its
 own.
 
-**The first four are fixed in `5.0.0-rc.11`.** `types-import` and `ssr-streaming` are still open in `5.0.0-rc.12`. This
+**All of them are fixed:** the first four in `5.0.0-rc.11`, `types-import` and `ssr-streaming` in `5.0.0-rc.13`. This
 repository stays on `5.0.0-rc.10`, the last version that shows all of them. To see the fixed behavior, which is the one
-of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.12` before a reproduction.
+of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.14` before a reproduction.
 
 | Reproduction           | Issue                                                                | 4.45.1                                          | 5.0.0-rc.10                                        |
 | ---------------------- | -------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------- |
