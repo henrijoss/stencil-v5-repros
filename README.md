@@ -18,6 +18,9 @@ of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.14` before a repro
 `ssr-streaming` is not in the table, because it is not a regression: it shows a gap in the parse gate that Stencil 5
 added for streamed server markup ([stenciljs/core#7049](https://github.com/stenciljs/core/issues/7049)).
 
+**Open:** `ssr-shadow-root` shows another gap in that parse gate, in `5.0.0-rc.14`, which this one reproduction is
+pinned to: a streamed host inside a declarative shadow root is not hydrated when it has been parsed.
+
 The 4.45.1 column comes from the same components with the Stencil 4 spelling of `@Component()` and
 `componentShouldUpdate`, and from a `dist` output target with `extras.enableImportInjection`. The browser
 reproductions were run in Chromium and WebKit.
@@ -111,6 +114,29 @@ pauses in the middle of the host. Each page prints the light DOM children and th
   The server renders `children: 1`. When the page appends the `div` after the template of the host has arrived and
   before its child has, the component hydrates without the child and shows `children: 0`, although the host has its
   `span` in the end. Without the `div` it stays `children: 1`.
+
+## `ssr-shadow-root`
+
+A server-rendered component that is streamed inside a declarative shadow root stays unhydrated after the parser has
+finished it, until something adds a node to the document or the document has loaded.
+
+```bash
+npm start --workspace=ssr-shadow-root   # http://localhost:3337
+```
+
+The server renders `<repro-ssr-counter>` with Stencil's `renderToString()`, streams the page once the component is
+defined, and keeps the response open after the whole host has arrived, as a streaming framework does while the rest of
+the page is not ready. The page shows whether the host still has the end marker of the server and whether Stencil has
+hydrated it, in an input, so that showing it changes no node of the document.
+
+- `control`: the host is a child of a `<section>`. It is hydrated right away, and its button counts.
+- `shadow-root`: the host is in `<section><template shadowrootmode="open">`, a shadow root that is not Stencil's, e.g.
+  of a page shell or of a component of another library. Expected as in `control`. Actual: the host keeps its `s-id` and
+  its `<!--e.…-->` end marker, and its button does nothing. `append a node to the document` hydrates it, and so does
+  `finish the response`.
+
+The parse gate looks at its held hosts again when a node is added below `document`. A `MutationObserver` on the
+document does not see what the parser adds within a shadow root, so the end marker of this host goes unnoticed.
 
 ## `cjs-interop`
 

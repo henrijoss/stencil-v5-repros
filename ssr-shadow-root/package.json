@@ -1,0 +1,12 @@
+{
+  "name": "ssr-shadow-root",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "stencil build",
+    "start": "stencil build && node server.js"
+  },
+  "devDependencies": {
+    "@stencil/core": "5.0.0-rc.14"
+  }
+}

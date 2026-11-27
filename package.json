@@ -8,7 +8,8 @@
     "cjs-interop",
     "changes-old-value",
     "types-import",
-    "ssr-streaming"
+    "ssr-streaming",
+    "ssr-shadow-root"
   ],
   "scripts": {
     "build": "npm run build --workspaces"
