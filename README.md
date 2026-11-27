@@ -19,7 +19,8 @@ of the 4.45.1 column, run `npm install @stencil/core@5.0.0-rc.14` before a repro
 added for streamed server markup ([stenciljs/core#7049](https://github.com/stenciljs/core/issues/7049)).
 
 **Open:** `ssr-shadow-root` shows another gap in that parse gate, in `5.0.0-rc.14`, which this one reproduction is
-pinned to: a streamed host inside a declarative shadow root is not hydrated when it has been parsed.
+pinned to: a streamed host inside a declarative shadow root is not hydrated when it has been parsed
+([stenciljs/core#7058](https://github.com/stenciljs/core/issues/7058)).
 
 The 4.45.1 column comes from the same components with the Stencil 4 spelling of `@Component()` and
 `componentShouldUpdate`, and from a `dist` output target with `extras.enableImportInjection`. The browser
